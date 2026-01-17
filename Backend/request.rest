@@ -1,0 +1,33 @@
+GET http://localhost:3000/schools
+
+###
+GET http://localhost:3000/students
+
+###
+GET http://localhost:3000/dayPasses
+
+###
+GET http://localhost:3000/teachers
+
+###
+
+GET http://localhost:3000/admin
+
+###
+
+POST http://localhost:3000/register-school
+Content-Type: application/json
+
+{
+  "name": "Greenwood Academy",
+  "domain": "greenwoodacademy.org",
+  "adminName": "Bub",
+  "adminLastName": "Sicle",
+  "username": "sarah.t",
+  "adminEmail": "bub@bub.org",
+  "password": "12345678",
+  "inviteCode": "123" 
+}
+
+
+

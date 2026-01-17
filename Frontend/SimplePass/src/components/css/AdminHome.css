@@ -1,0 +1,143 @@
+/* --- Page Wrapper --- */
+.admin-page {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 20px;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #111827;
+}
+
+/* --- Header --- */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.admin-header h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+/* --- Logout Button --- */
+#logoutButton {
+  padding: 10px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+#logoutButton:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+#logoutButton:active {
+  transform: translateY(0);
+}
+
+/* --- Section Layout --- */
+.admin-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+/* --- Card Style --- */
+.create-student-box,
+.create-teacher-box {
+  background: #ffffff;
+  display: block;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.create-student-box,
+.create-teacher-box {
+  text-align: center;
+}
+
+.create-student-box h2,
+.create-teacher-box h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  color: #374151;
+}
+
+/* --- Inputs --- */
+.student-input,
+.teacher-input {
+  width: 90%;
+  height: 44px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.student-input:hover,
+.teacher-input:hover {
+  border-color: #b3b3b3;
+}
+
+.student-input:focus,
+.teacher-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+/* --- Buttons --- */
+.create-student-btn,
+.create-teacher-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 14px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.create-student-btn:hover,
+.create-teacher-btn:hover {
+  background: #1e4fcf;
+  transform: translateY(-2px);
+}
+
+.create-student-btn:active,
+.create-teacher-btn:active {
+  transform: translateY(0);
+  background: #195bb8;
+}
+
+/* --- Messages --- */
+.student-message {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}

@@ -1,0 +1,143 @@
+/* --- Page layout --- */
+.register-container {
+  max-width: 420px;
+  width: 100%;
+  margin: 60px auto;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  font-family: "Inter", system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Headings --- */
+.register-container h1 {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+  color: #111827;
+}
+
+.register-container h2 {
+  width: 100%;
+  max-width: 300px;
+  margin: 28px 0 10px;
+  font-size: 18px;
+  color: #374151;
+  text-align: left;
+}
+
+/* --- Inputs --- */
+.register-item {
+  width: 100%;
+  max-width: 300px;
+  height: 45px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.register-item:hover {
+  border-color: #b3b3b3;
+}
+
+.register-item:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #fff;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+/* --- Invalid inputs --- */
+.register-item.invalid {
+  border-color: #dc2626;
+  background: #fff5f5;
+}
+
+.register-item.invalid:focus {
+  box-shadow: 0 0 4px rgba(220, 38, 38, 0.4);
+}
+
+/* --- Error text --- */
+.error {
+  width: 100%;
+  max-width: 300px;
+  margin: 2px 0 6px;
+  font-size: 13px;
+  color: #dc2626;
+  text-align: left;
+}
+
+/* --- Password wrapper --- */
+.password-wrapper {
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+}
+
+.password-wrapper .register-item {
+  padding-right: 42px;
+}
+
+/* --- Eye icon --- */
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.eye-icon:hover {
+  color: #111827;
+}
+
+/* --- Button --- */
+#register-button {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px;
+  margin-top: 22px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+#register-button:hover:not(.disabled) {
+  background-color: #1e4fcf;
+  transform: translateY(-2px);
+}
+
+#register-button:active:not(.disabled) {
+  transform: translateY(0);
+  background-color: #195bb8;
+}
+
+/* --- Disabled button --- */
+#register-button.disabled {
+  background: #c7c7c7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .register-container {
+    margin: 30px 16px;
+    padding: 24px;
+  }
+}

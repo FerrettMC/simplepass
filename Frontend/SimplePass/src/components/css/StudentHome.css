@@ -1,0 +1,157 @@
+/* --- Layout --- */
+.student-container {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 32px;
+  font-family: "Inter", system-ui, sans-serif;
+  color: #111827;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.student-container h1 {
+  font-size: 30px;
+  margin-bottom: 6px;
+}
+
+.student-container h2 {
+  margin-top: 32px;
+  font-size: 20px;
+  color: #374151;
+}
+
+/* --- Form Styling --- */
+label {
+  display: block;
+  margin-top: 18px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+select:hover,
+input:hover {
+  border-color: #b3b3b3;
+}
+
+select:focus,
+input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* --- Primary Button --- */
+button {
+  margin-top: 24px;
+  padding: 12px 18px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+button:hover {
+  background: #1e4fcf;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* --- Pass Card --- */
+.pass-card {
+  margin-top: 5px;
+  padding: 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 87%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative accent */
+.pass-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #2563eb, #22c55e, #f59e0b, #dc2626);
+}
+
+.pass-card h3 {
+  margin-bottom: 14px;
+  font-size: 22px;
+  color: #111827;
+}
+
+/* --- Status Colors --- */
+.status-waiting {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.status-active {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.status-ended {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+
+.status-expired {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+/* --- Pass Info Rows (optional but recommended) */
+.pass-card p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #374151;
+}
+
+/* --- Pass Buttons --- */
+.pass-card button {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.pass-card button.cancel {
+  background: #dc2626;
+}
+
+.pass-card button.cancel:hover {
+  background: #b91c1c;
+}
+
+.pass-card button.end {
+  background: #f59e0b;
+  color: #111827;
+}
+
+.pass-card button.end:hover {
+  background: #d97706;
+}

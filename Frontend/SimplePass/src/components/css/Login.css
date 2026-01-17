@@ -1,0 +1,104 @@
+/* --- Page Wrapper --- */
+#loginPageDiv {
+  max-width: 420px;
+  width: 100%;
+  margin: 60px auto;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Headings --- */
+#loginPageDiv h1 {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+  color: #111827;
+}
+
+#loginPageDiv h2 {
+  margin: 25px 0 10px 0;
+  font-size: 18px;
+  color: #374151;
+}
+
+/* --- Google Login Button Wrapper --- */
+.google-login-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Login Form Container --- */
+.login-form {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Inputs --- */
+.login-form input {
+  width: 100%;
+  height: 45px;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.login-form input:hover {
+  border-color: #b3b3b3;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #fff;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.4);
+}
+
+/* --- Login Button --- */
+#loginButton {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+#loginButton:hover {
+  background-color: #1e4fcf;
+  transform: translateY(-2px);
+}
+
+#loginButton:active {
+  transform: translateY(0);
+  background-color: #195bb8;
+}
+
+/* --- Register Link --- */
+#loginPageDiv a {
+  margin-top: 20px;
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+#loginPageDiv a:hover {
+  text-decoration: underline;
+}
