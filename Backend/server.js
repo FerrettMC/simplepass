@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -91,7 +91,8 @@ app.post("/auth/google", async (req, res) => {
 
     let duration;
 
-    if (user.role === "admin") duration = 7 * 24 * 60 * 60 * 1000; // 1 week
+    if (user.role === "admin")
+      duration = 7 * 24 * 60 * 60 * 1000; // 1 week
     else duration = 180 * 24 * 60 * 60 * 1000; // 6 months for students/teachers
 
     res.cookie("jwt", accessToken, {
@@ -283,7 +284,7 @@ app.post(
       message: `Student created with email ${student.email}`,
       student,
     });
-  }
+  },
 );
 
 app.post(
@@ -330,7 +331,7 @@ app.post(
       message: `Teacher created with email ${teacher.email}`,
       teacher,
     });
-  }
+  },
 );
 
 app.post("/users/login", async (req, res) => {
@@ -435,7 +436,7 @@ app.post("/pass/create", authenticateToken, (req, res) => {
   const user = users.find((u) => u.id === req.user.id);
   const userSchool = schools.find((s) => s.id === user.schoolID);
   const teacher = users.find(
-    (u) => u.role === "teacher" && u.id === fromTeacher
+    (u) => u.role === "teacher" && u.id === fromTeacher,
   );
 
   if (user.pass && user.pass.status === "active") {
@@ -456,7 +457,7 @@ app.post("/pass/create", authenticateToken, (req, res) => {
   }
 
   const teacherDestination = users.find(
-    (u) => u.role === "teacher" && u.id === destination
+    (u) => u.role === "teacher" && u.id === destination,
   );
 
   const isTeacherDestination = Boolean(teacherDestination);

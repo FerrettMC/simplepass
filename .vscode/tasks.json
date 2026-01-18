@@ -9,6 +9,15 @@
                 "reveal": "always"
             },
             "problemMatcher": []
+        },
+        {
+            "label": "Run Frontend",
+            "type": "shell",
+            "command": "scripts/run-frontend.bat",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
         }
     ]
 }
