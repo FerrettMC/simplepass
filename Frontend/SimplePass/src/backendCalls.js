@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getCurrentUser() {
   try {
-    const res = await axios.get("http://localhost:3000/users/current", {
+    const res = await axios.get("http://localhost:3000/auth/me", {
       withCredentials: true,
     });
     return res.data.user;
@@ -15,9 +15,9 @@ export async function getCurrentUser() {
 export async function registerSchool(school) {
   try {
     const res = await axios.post(
-      "http://localhost:3000/register-school",
+      "http://localhost:3000/school/register",
       school,
-      { withCredentials: true }
+      { withCredentials: true },
     );
 
     return res.data;
@@ -31,9 +31,9 @@ export async function registerSchool(school) {
 export async function loginUser(email, password) {
   try {
     const res = await axios.post(
-      "http://localhost:3000/users/login",
+      "http://localhost:3000/auth/login",
       { email, password },
-      { withCredentials: true }
+      { withCredentials: true },
     );
 
     console.log(res.data.message);
@@ -49,7 +49,7 @@ export async function loginWithGoogle(token) {
     const res = await axios.post(
       "http://localhost:3000/auth/google",
       { token },
-      { withCredentials: true }
+      { withCredentials: true },
     );
 
     return res.data;
@@ -57,13 +57,6 @@ export async function loginWithGoogle(token) {
     console.log(err.response?.data);
     return { message: err.response?.data };
   }
-}
-
-export async function getUsers() {
-  const res = await axios.get("http://localhost:3000/users", {
-    withCredentials: true,
-  });
-  return res.data;
 }
 
 export async function authenticateUser() {
@@ -79,9 +72,13 @@ export async function authenticateUser() {
 
 export async function createStudent(user) {
   try {
-    const res = await axios.post("http://localhost:3000/student/create", user, {
-      withCredentials: true,
-    });
+    const res = await axios.post(
+      "http://localhost:3000/students/create",
+      user,
+      {
+        withCredentials: true,
+      },
+    );
     console.log(res.data.message);
     return res.data;
   } catch (err) {
@@ -91,9 +88,13 @@ export async function createStudent(user) {
 
 export async function createTeacher(user) {
   try {
-    const res = await axios.post("http://localhost:3000/teacher/create", user, {
-      withCredentials: true,
-    });
+    const res = await axios.post(
+      "http://localhost:3000/teachers/create",
+      user,
+      {
+        withCredentials: true,
+      },
+    );
     console.log(res.data.message);
     return res.data;
   } catch (err) {
@@ -116,7 +117,7 @@ export async function createPass(destination, fromTeacher, purpose) {
       },
       {
         withCredentials: true,
-      }
+      },
     );
 
     return res.data;
@@ -130,7 +131,7 @@ export async function startPass(passID) {
     const res = await axios.post(
       "http://localhost:3000/pass/start",
       { passID }, // body
-      { withCredentials: true } // config
+      { withCredentials: true }, // config
     );
 
     console.log(res.data.message);
@@ -145,7 +146,7 @@ export async function endPass() {
     const res = await axios.post(
       "http://localhost:3000/pass/end",
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
     return res.data;
   } catch (err) {
@@ -158,7 +159,7 @@ export async function cancelPass() {
     const res = await axios.post(
       "http://localhost:3000/pass/cancel",
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
     return res.data;
   } catch (err) {
@@ -193,11 +194,11 @@ export async function getSchoolDestinations() {
 export async function logoutUser() {
   try {
     const res = await axios.post(
-      "http://localhost:3000/logout",
+      "http://localhost:3000/auth/logout",
       {},
       {
         withCredentials: true,
-      }
+      },
     );
     return res.data;
   } catch (err) {

@@ -15,7 +15,7 @@ GET http://localhost:3000/admin
 
 ###
 
-POST http://localhost:3000/register-school
+POST http://localhost:3000/school/register
 Content-Type: application/json
 
 {

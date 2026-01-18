@@ -70,7 +70,8 @@ export default function StudentHome({ setAuthenticated }) {
     async function loadData() {
       const currentUser = await getCurrentUser();
       setStudent(currentUser);
-      setPass(currentUser.pass); // load existing pass if any
+      if (currentUser.pass) setPass(currentUser.pass); // load existing pass if any
+
       setWelcomeMessage(`Hello, ${currentUser.firstName}!`);
 
       const teacherRes = await getStudentTeachers();
