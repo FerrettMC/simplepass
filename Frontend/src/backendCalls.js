@@ -237,6 +237,32 @@ export async function getTeacherPasses() {
   }
 }
 
+export async function addTeacherAutopassLocation({ location }) {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/teachers/add-autopass-location",
+      { location },
+      { withCredentials: true },
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function removeTeacherAutopassLocation({ location }) {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/teachers/remove-autopass-location",
+      { location },
+      { withCredentials: true },
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function logoutUser() {
   try {
     const res = await axios.post(

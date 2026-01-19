@@ -6,6 +6,9 @@ import {
   endPass,
   cancelPass,
   getStudentTeachers,
+  getSchool,
+  addTeacherAutopassLocation,
+  removeTeacherAutopassLocation,
 } from "../backendCalls";
 import "./css/TeacherHome.css";
 
@@ -19,6 +22,10 @@ export default function TeacherHome({ setAuthenticated }) {
   const [passes, setPasses] = useState([]);
   const [timers, setTimers] = useState({});
   const [schoolTeachers, setSchoolTeachers] = useState([]);
+  const [schoolLocations, setSchoolLocations] = useState([]); // autopass
+  const [allSchoolLocations, setAllSchoolLocations] = useState([]); // full list
+
+  const [newLocation, setNewLocation] = useState("");
 
   async function logout() {
     await logoutUser();
@@ -53,6 +60,10 @@ export default function TeacherHome({ setAuthenticated }) {
       const currentUser = await getCurrentUser();
       setTeacher(currentUser);
       setWelcomeMessage(`Hello, ${currentUser.firstName}!`);
+      const currentSchool = await getSchool();
+      setAllSchoolLocations(currentSchool.locations);
+      setSchoolLocations(currentUser.autoPassLocations || []);
+      console.log(currentUser);
 
       loadPasses();
 
@@ -99,6 +110,37 @@ export default function TeacherHome({ setAuthenticated }) {
     return dest;
   }
 
+  async function handleAddLocation() {
+    if (!newLocation) return alert("Select a location first");
+
+    try {
+      const res = await addTeacherAutopassLocation({ location: newLocation });
+
+      if (res?.message === "Location added") {
+        setSchoolLocations(res.autoPassLocations);
+        setNewLocation("");
+      } else {
+        alert(res?.message || "Error adding location");
+      }
+    } catch (err) {
+      alert("Failed to add location");
+    }
+  }
+
+  async function handleDeleteLocation(loc) {
+    try {
+      const res = await removeTeacherAutopassLocation({ location: loc });
+
+      if (res?.message === "Location removed") {
+        setSchoolLocations(res.autoPassLocations);
+      } else {
+        alert(res?.message || "Error removing location");
+      }
+    } catch (err) {
+      alert("Failed to remove location");
+    }
+  }
+
   return (
     <div className="teacher-home">
       <h1>{welcomeMessage}</h1>
@@ -106,6 +148,42 @@ export default function TeacherHome({ setAuthenticated }) {
       <button id="logoutButton" onClick={logout}>
         Log out
       </button>
+
+      <div className="autopass-box">
+        <h3>AutoPass Locations</h3>
+
+        {schoolLocations.length === 0 && <p>No AutoPass locations yet.</p>}
+
+        <ul>
+          {schoolLocations.map((loc) => (
+            <li key={loc} className="location-item">
+              {loc}
+              <button
+                className="delete-btn autopass-boxDelete"
+                onClick={() => handleDeleteLocation(loc)}
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <div className="add-location-row">
+          <select
+            value={newLocation}
+            onChange={(e) => setNewLocation(e.target.value)}
+          >
+            <option value="">Select a location</option>
+            {allSchoolLocations.map((loc) => (
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+
+          <button onClick={handleAddLocation}>Add</button>
+        </div>
+      </div>
 
       {/* WAITING PASSES */}
       <h2>Waiting Passes</h2>

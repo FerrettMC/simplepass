@@ -25,6 +25,7 @@ export function getCurrentUser(req, res) {
         gradeLevel: fullUser.gradeLevel,
         subjects: fullUser.subjects,
         dayPasses: fullUser.dayPasses,
+        autoPassLocations: fullUser.autoPassLocations || null,
         pass: fullUser.pass || null,
         schoolID: fullUser.schoolID,
       },

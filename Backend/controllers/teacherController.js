@@ -9,7 +9,7 @@ export function getTeachers(req, res) {
   res.json(teachers);
 }
 
-// POST /teacher/create
+// POST /teachers/create
 export async function createTeacher(req, res) {
   const { email, firstName, lastName, subjects } = req.body;
 
@@ -34,7 +34,7 @@ export async function createTeacher(req, res) {
     email,
     profile: "",
     role: "teacher",
-    autoPassLocations: ["hartwig"],
+    autoPassLocations: [],
     subjects: subjectsArray,
     lastReset: null,
     dayPasses: null,
@@ -54,7 +54,7 @@ export async function createTeacher(req, res) {
   });
 }
 
-// GET /teacher/passes
+// GET /teachers/passes
 export function getTeacherPasses(req, res) {
   if (req.user.role !== "teacher") {
     return res.status(403).json({ message: "Must be teacher" });
@@ -83,4 +83,76 @@ export function getTeacherPasses(req, res) {
     }));
 
   res.json({ passes: waitingPasses });
+}
+
+// POST /teachers/add-autopass-location
+export function addTeacherAutoPassLocation(req, res) {
+  const user = users.find((u) => u.id === req.user.id);
+  const school = schools.find((s) => s.id === req.user.schoolID);
+  const location = req.body.location;
+
+  if (!location) {
+    return res.status(400).json({ message: "Location is required" });
+  }
+  if (!user) {
+    return res.status(404).json({ message: "Teacher not found" });
+  }
+  if (!school) {
+    return res.status(404).json({ message: "School not found" });
+  }
+  if (user.role !== "teacher") {
+    return res.status(403).json({ message: "Must be a teacher" });
+  }
+  if (user.autoPassLocations.includes(location)) {
+    return res
+      .status(400)
+      .json({ message: "Location already in teacher autopass locations" });
+  }
+  if (!school.locations.includes(location)) {
+    return res.status(404).json({ message: "School location not found" });
+  }
+
+  user.autoPassLocations.push(location);
+
+  return res.json({
+    message: "Location added",
+    autoPassLocations: user.autoPassLocations,
+  });
+}
+
+// POST /teachers/remove-autopass-location
+export function removeTeacherAutoPassLocation(req, res) {
+  const user = users.find((u) => u.id === req.user.id);
+  const school = schools.find((s) => s.id === req.user.schoolID);
+  const location = req.body.location;
+
+  if (!location) {
+    return res.status(400).json({ message: "Location is required" });
+  }
+  if (!user) {
+    return res.status(404).json({ message: "Teacher not found" });
+  }
+  if (!school) {
+    return res.status(404).json({ message: "School not found" });
+  }
+  if (user.role !== "teacher") {
+    return res.status(403).json({ message: "Must be a teacher" });
+  }
+  if (!user.autoPassLocations.includes(location)) {
+    return res
+      .status(400)
+      .json({ message: "Location not in teacher autopass locations" });
+  }
+  if (!school.locations.includes(location)) {
+    return res.status(404).json({ message: "School location not found" });
+  }
+
+  user.autoPassLocations = user.autoPassLocations.filter(
+    (loc) => loc !== location,
+  );
+
+  return res.json({
+    message: "Location removed",
+    autoPassLocations: user.autoPassLocations,
+  });
 }

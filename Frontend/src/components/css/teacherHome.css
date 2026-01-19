@@ -86,3 +86,122 @@
 .pass-card button:nth-child(3):hover {
   background: #4b5563;
 }
+
+.autopass-box {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.autopass-box h3 {
+  margin-top: 0;
+}
+
+.autopass-box ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.add-location-row {
+  display: flex;
+  align-items: center; /* vertically align select + button */
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.add-location-row select {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+.add-location-row button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  height: 32px; /* same as select */
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.add-location-row button:hover {
+  background: #1d4ed8;
+}
+
+.location-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+  gap: 8px;
+}
+
+.delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: #dc2626;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px;
+  width: 18px;
+  height: 18px;
+}
+
+.delete-btn:hover {
+  color: #b91c1c;
+}
+
+.autopass-box,
+.autopass-box * {
+  line-height: 1.2;
+  font-size: 16px;
+}
+
+/* Kill any global button weirdness inside this box */
+.autopass-box button {
+  margin: 1px;
+  line-height: 1;
+}
+
+/* Nudge both buttons up a bit to visually center them */
+.delete-btn,
+.add-location-row button {
+  position: relative;
+  top: 3px; /* try -2, -3, or -4 until it looks perfect */
+}
+
+/* Override global button hover styles inside the AutoPass box */
+.autopass-boxDelete {
+  background: transparent !important;
+  color: #dc2626 !important;
+}
+.autopass-box ul {
+  max-height: 120px; /* enough for ~3 items */
+  overflow-y: auto;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.autopass-box ul::-webkit-scrollbar {
+  width: 6px;
+}
+
+.autopass-box ul::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.autopass-box ul::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
