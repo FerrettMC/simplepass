@@ -1,4 +1,4 @@
-GET http://localhost:3000/schools
+GET http://localhost:3000/school
 
 ###
 GET http://localhost:3000/students

@@ -1,0 +1,88 @@
+/* Page layout */
+.teacher-home {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: system-ui, sans-serif;
+}
+
+.teacher-home h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+#logoutButton {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+#logoutButton:hover {
+  background: #b91c1c;
+}
+
+/* Section title */
+.teacher-home h2 {
+  margin-top: 20px;
+  font-size: 22px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 6px;
+}
+
+/* Pass card */
+.pass-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.pass-card p {
+  margin: 4px 0;
+}
+
+/* Buttons */
+.pass-card button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Approve */
+.pass-card button:nth-child(1) {
+  background: #059669;
+  color: white;
+}
+
+.pass-card button:nth-child(1):hover {
+  background: #047857;
+}
+
+/* Deny */
+.pass-card button:nth-child(2) {
+  background: #dc2626;
+  color: white;
+}
+
+.pass-card button:nth-child(2):hover {
+  background: #b91c1c;
+}
+
+/* End */
+.pass-card button:nth-child(3) {
+  background: #6b7280;
+  color: white;
+}
+
+.pass-card button:nth-child(3):hover {
+  background: #4b5563;
+}

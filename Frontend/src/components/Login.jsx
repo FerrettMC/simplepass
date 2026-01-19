@@ -48,9 +48,9 @@ export default function Login({ setAuthenticated }) {
 
   return (
     <div id="loginPageDiv">
-      <h1>SimplePass</h1>
+      <h1 style={{ marginBottom: "15px", fontSize: "35px" }}>SimplePass</h1>
 
-      <h2>For students and teachers:</h2>
+      <h1 style={{ fontSize: "20px" }}>For students and teachers:</h1>
       <GoogleLogin
         onSuccess={async (credentialResponse) => {
           const token = credentialResponse.credential;
@@ -60,6 +60,7 @@ export default function Login({ setAuthenticated }) {
         onError={() => console.log("Google Login Failed")}
       />
       {googleMessage && <p style={{ color: "red" }}>Error logging in</p>}
+      {!googleMessage && <div style={{ marginBottom: "15px" }}></div>}
 
       <h2>For admins:</h2>
       <div className="login-form">
@@ -67,6 +68,7 @@ export default function Login({ setAuthenticated }) {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onKeyDown={handleKeyDown}
         />
 
         <input

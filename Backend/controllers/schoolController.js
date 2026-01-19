@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import generateToken from "../utils/generateToken.js";
 
-// GET /schools
+// GET /school
 export function getSchools(req, res) {
   res.json(schools);
 }
@@ -35,7 +35,22 @@ export function getDestinations(req, res) {
   res.json({ destinations: school.locations });
 }
 
-// POST /register-school
+// GET /school/user
+export function getSchool(req, res) {
+  const school = schools.find((s) => s.id === req.user.schoolID);
+  if (!school) return res.json({ message: "School not found" });
+
+  res.json({
+    school: {
+      name: school.name,
+      maxPassesDaily: school.maxPassesDaily,
+      locations: school.locations,
+      teachers: school.teachers,
+    },
+  });
+}
+
+// POST /school/register
 export async function registerSchool(req, res) {
   const required = [
     "name",

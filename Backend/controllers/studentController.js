@@ -22,6 +22,8 @@ export async function createStudent(req, res) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ message: "Invalid email format" });
   }
+  const userFree = users.find((u) => u.email === email);
+  if (userFree) return res.status(400).json({ message: "Email in use!" });
 
   const hashedPassword = await bcrypt.hash("1", 10);
 

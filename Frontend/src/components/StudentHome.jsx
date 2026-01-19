@@ -7,6 +7,7 @@ import {
   startPass,
   endPass,
   cancelPass,
+  getSchool,
 } from "../backendCalls";
 import "./css/StudentHome.css";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ export default function StudentHome({ setAuthenticated }) {
   const [student, setStudent] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const [locations, setLocations] = useState([]);
+  const [school, setSchool] = useState(null);
 
   const [fromTeacher, setFromTeacher] = useState("");
   const [destination, setDestination] = useState("");
@@ -70,6 +72,8 @@ export default function StudentHome({ setAuthenticated }) {
     async function loadData() {
       const currentUser = await getCurrentUser();
       setStudent(currentUser);
+      const userSchool = await getSchool();
+      setSchool(userSchool);
       if (currentUser.pass) setPass(currentUser.pass); // load existing pass if any
 
       setWelcomeMessage(`Hello, ${currentUser.firstName}!`);
@@ -129,10 +133,21 @@ export default function StudentHome({ setAuthenticated }) {
 
   // Start pass (only if autoPass)
   async function handleStartPass() {
-    const res = await startPass(pass.id);
+    const res = await startPass();
     if (res.pass) {
       setPass(res.pass);
     }
+    const updatedUser = await getCurrentUser();
+    setStudent(updatedUser);
+  }
+
+  function getDestinationName(dest) {
+    // If destination matches a teacher ID, return teacher name
+    const teacher = teachers.find((t) => t.id === dest);
+    if (teacher) return `${teacher.firstName} ${teacher.lastName}`;
+
+    // Otherwise it's a location string
+    return dest;
   }
 
   if (!student) return <div>Loading...</div>;
@@ -168,8 +183,9 @@ export default function StudentHome({ setAuthenticated }) {
               <strong>From:</strong> {getCurrentPassTeacher(pass.fromTeacher)}
             </p>
             <p>
-              <strong>To:</strong> {pass.destination}
+              <strong>To:</strong> {getDestinationName(pass.destination)}
             </p>
+
             <p>
               <strong>Purpose:</strong> {pass.purpose || "None"}
             </p>
@@ -205,7 +221,10 @@ export default function StudentHome({ setAuthenticated }) {
         </div>
       )}
 
-      <h2>Create a Hall Pass</h2>
+      <h2>
+        Create a Hall Pass (Passes left:{" "}
+        {school ? school.maxPassesDaily - student.dayPasses : "…"})
+      </h2>
 
       {/* FROM TEACHER */}
       <label>From Teacher:</label>

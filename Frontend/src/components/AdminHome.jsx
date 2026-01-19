@@ -8,6 +8,8 @@ export default function AdminHome({ setAuthenticated }) {
   const [studentEmail, setStudentEmail] = useState("");
   const [studentGrade, setStudentGrade] = useState("");
   const [studentMessage, setStudentMessage] = useState("");
+  const [studentError, setStudentError] = useState(false);
+  const [teacherError, setTeacherError] = useState(false);
 
   const [teacherEmail, setTeacherEmail] = useState("");
   const [teacherFirstName, setTeacherFirstName] = useState("");
@@ -28,6 +30,11 @@ export default function AdminHome({ setAuthenticated }) {
       gradeLevel: studentGrade,
     });
     setStudentMessage(res.message);
+    if (res.error) {
+      setStudentError(true);
+    } else {
+      setStudentError(false);
+    }
   }
 
   async function createTeacherF() {
@@ -38,7 +45,24 @@ export default function AdminHome({ setAuthenticated }) {
       subjects: teacherSubjects,
     });
     setTeacherMessage(res.message);
-    console.log(res.teacher.username);
+    if (res.error) {
+      setTeacherError(true);
+    } else {
+      setTeacherError(false);
+      console.log(res.data.teacher);
+    }
+  }
+
+  function handleKeyDownStudent(e) {
+    if (e.key === "Enter") {
+      createStudentF();
+    }
+  }
+
+  function handleKeyDownTeacher(e) {
+    if (e.key === "Enter") {
+      createTeacherF();
+    }
   }
 
   return (
@@ -60,6 +84,7 @@ export default function AdminHome({ setAuthenticated }) {
             value={studentEmail}
             onChange={(e) => setStudentEmail(e.target.value)}
             className="student-input"
+            onKeyDown={handleKeyDownStudent}
           />
 
           <input
@@ -70,6 +95,7 @@ export default function AdminHome({ setAuthenticated }) {
             min={0}
             onChange={(e) => setStudentGrade(e.target.value)}
             className="student-input"
+            onKeyDown={handleKeyDownStudent}
           />
 
           <button className="create-student-btn" onClick={createStudentF}>
@@ -77,7 +103,17 @@ export default function AdminHome({ setAuthenticated }) {
           </button>
 
           {studentMessage && (
-            <p className="student-message">{studentMessage}</p>
+            <p
+              className="student-message"
+              style={{
+                background: studentError ? "#fdedec" : "#ecfdf5",
+                border: studentError
+                  ? "1px solid #e76e6e"
+                  : "1px solid #6ee7b7",
+              }}
+            >
+              {studentMessage}
+            </p>
           )}
         </div>
 
@@ -90,6 +126,7 @@ export default function AdminHome({ setAuthenticated }) {
             value={teacherEmail}
             onChange={(e) => setTeacherEmail(e.target.value)}
             className="teacher-input"
+            onKeyDown={handleKeyDownTeacher}
           />
 
           <input
@@ -97,6 +134,7 @@ export default function AdminHome({ setAuthenticated }) {
             value={teacherFirstName}
             onChange={(e) => setTeacherFirstName(e.target.value)}
             className="teacher-input"
+            onKeyDown={handleKeyDownTeacher}
           />
 
           <input
@@ -104,6 +142,7 @@ export default function AdminHome({ setAuthenticated }) {
             value={teacherLastName}
             onChange={(e) => setTeacherLastName(e.target.value)}
             className="teacher-input"
+            onKeyDown={handleKeyDownTeacher}
           />
 
           <input
@@ -111,6 +150,7 @@ export default function AdminHome({ setAuthenticated }) {
             value={teacherSubjects}
             onChange={(e) => setTeacherSubjects(e.target.value)}
             className="teacher-input"
+            onKeyDown={handleKeyDownTeacher}
           />
 
           <button className="create-teacher-btn" onClick={createTeacherF}>
@@ -118,7 +158,17 @@ export default function AdminHome({ setAuthenticated }) {
           </button>
 
           {teacherMessage && (
-            <p className="student-message">{teacherMessage}</p>
+            <p
+              className="student-message"
+              style={{
+                background: teacherError ? "#fdedec" : "#ecfdf5",
+                border: teacherError
+                  ? "1px solid #e76e6e"
+                  : "1px solid #6ee7b7",
+              }}
+            >
+              {teacherMessage}
+            </p>
           )}
         </div>
       </div>

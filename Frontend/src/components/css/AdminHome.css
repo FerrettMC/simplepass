@@ -29,7 +29,9 @@
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 #logoutButton:hover {
@@ -79,7 +81,9 @@
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 15px;
-  transition: border 0.2s, box-shadow 0.2s;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
 }
 
 .student-input:hover,
@@ -107,7 +111,9 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .create-student-btn:hover,
@@ -126,9 +132,7 @@
 .student-message {
   margin-top: 12px;
   font-size: 14px;
-  color: #065f46;
-  background: #ecfdf5;
-  border: 1px solid #6ee7b7;
+  color: #4e4e4e;
   padding: 10px;
   border-radius: 8px;
 }

@@ -75,14 +75,25 @@ export async function createStudent(user) {
     const res = await axios.post(
       "http://localhost:3000/students/create",
       user,
-      {
-        withCredentials: true,
-      },
+      { withCredentials: true },
     );
-    console.log(res.data.message);
-    return res.data;
+
+    return {
+      error: false,
+      message: res.data.message,
+      data: res.data,
+    };
   } catch (err) {
-    console.log(err);
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Unknown error";
+
+    return {
+      error: true,
+      message: msg,
+    };
   }
 }
 
@@ -91,14 +102,25 @@ export async function createTeacher(user) {
     const res = await axios.post(
       "http://localhost:3000/teachers/create",
       user,
-      {
-        withCredentials: true,
-      },
+      { withCredentials: true },
     );
-    console.log(res.data.message);
-    return res.data;
+
+    return {
+      error: false,
+      message: res.data.message,
+      data: res.data,
+    };
   } catch (err) {
-    console.log(err);
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Unknown error";
+
+    return {
+      error: true,
+      message: msg,
+    };
   }
 }
 
@@ -141,11 +163,11 @@ export async function startPass(passID) {
   }
 }
 
-export async function endPass() {
+export async function endPass(passID) {
   try {
     const res = await axios.post(
       "http://localhost:3000/pass/end",
-      {},
+      { passID },
       { withCredentials: true },
     );
     return res.data;
@@ -154,11 +176,11 @@ export async function endPass() {
   }
 }
 
-export async function cancelPass() {
+export async function cancelPass(passID) {
   try {
     const res = await axios.post(
       "http://localhost:3000/pass/cancel",
-      {},
+      { passID },
       { withCredentials: true },
     );
     return res.data;
@@ -182,6 +204,30 @@ export async function getStudentTeachers() {
 export async function getSchoolDestinations() {
   try {
     const res = await axios.get("http://localhost:3000/school/destinations", {
+      withCredentials: true,
+    });
+    console.log(res.data);
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getSchool() {
+  try {
+    const res = await axios.get("http://localhost:3000/school/user", {
+      withCredentials: true,
+    });
+    console.log(res.data);
+    return res.data.school;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export async function getTeacherPasses() {
+  try {
+    const res = await axios.get("http://localhost:3000/teachers/passes", {
       withCredentials: true,
     });
     console.log(res.data);

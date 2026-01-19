@@ -55,22 +55,58 @@ export function createPass(req, res) {
   };
 
   user.pass = pass;
-  user.dayPasses++;
 
   res.json({ message: "Pass created", pass });
 }
 
 // POST /pass/start
 export function startPass(req, res) {
-  const user = users.find((u) => u.id === req.user.id);
-  const pass = user.pass;
+  let user = null;
+  let pass = null;
 
-  if (!pass || pass.status !== "waiting")
+  // If a teacher provides a passID, start that student's pass
+  if (req.body.passID) {
+    // Teachers only
+    if (req.user.role !== "teacher") {
+      return res.json({
+        message: "Only teachers can start another user's pass",
+      });
+    }
+
+    user = users.find((u) => u.pass && u.pass.id === req.body.passID);
+
+    if (!user) {
+      return res.json({ message: "Pass not found" });
+    }
+
+    if (req.user.schoolID !== user.schoolID) {
+      return res.json({
+        message: "Same school necessary",
+      });
+    }
+
+    pass = user.pass;
+    user.dayPasses++;
+  }
+
+  // Students starting their own pass
+  else {
+    user = users.find((u) => u.id === req.user.id);
+    pass = user.pass;
+    user.dayPasses++;
+  }
+
+  // No pass or wrong status
+  if (!pass || pass.status !== "waiting") {
     return res.json({ message: "No pass waiting to start" });
+  }
 
-  if (!pass.autoPass && req.user.role !== "teacher")
+  // Students need autoPass OR teacher approval
+  if (req.user.role === "student" && !pass.autoPass) {
     return res.json({ message: "Teacher approval required" });
+  }
 
+  // Start the pass
   pass.status = "active";
   pass.start = Date.now();
 
@@ -79,8 +115,38 @@ export function startPass(req, res) {
 
 // POST /pass/end
 export function endPass(req, res) {
-  const user = users.find((u) => u.id === req.user.id);
-  const pass = user.pass;
+  let user = null;
+  let pass = null;
+
+  // If a teacher provides a passID, end that student's pass
+  if (req.body.passID) {
+    // Teachers only
+    if (req.user.role !== "teacher") {
+      return res.json({
+        message: "Only teachers can end another user's pass",
+      });
+    }
+
+    user = users.find((u) => u.pass && u.pass.id === req.body.passID);
+
+    if (!user) {
+      return res.json({ message: "Pass not found" });
+    }
+
+    if (req.user.schoolID !== user.schoolID) {
+      return res.json({
+        message: "Same school necessary",
+      });
+    }
+
+    pass = user.pass;
+  }
+
+  // Students ending their own pass
+  else {
+    user = users.find((u) => u.id === req.user.id);
+    pass = user.pass;
+  }
 
   if (!pass || pass.status !== "active")
     return res.json({ message: "No active pass to end" });
@@ -93,8 +159,38 @@ export function endPass(req, res) {
 
 // POST /pass/cancel
 export function cancelPass(req, res) {
-  const user = users.find((u) => u.id === req.user.id);
-  const pass = user.pass;
+  let user = null;
+  let pass = null;
+
+  // If a teacher provides a passID, cancel that student's pass
+  if (req.body.passID) {
+    // Teachers only
+    if (req.user.role !== "teacher") {
+      return res.json({
+        message: "Only teachers can start another user's pass",
+      });
+    }
+
+    user = users.find((u) => u.pass && u.pass.id === req.body.passID);
+
+    if (!user) {
+      return res.json({ message: "Pass not found" });
+    }
+
+    if (req.user.schoolID !== user.schoolID) {
+      return res.json({
+        message: "Same school necessary",
+      });
+    }
+
+    pass = user.pass;
+  }
+
+  // Students cancelling their own pass
+  else {
+    user = users.find((u) => u.id === req.user.id);
+    pass = user.pass;
+  }
 
   if (!pass || pass.status !== "waiting")
     return res.json({ message: "No pending pass to cancel" });
