@@ -128,3 +128,13 @@ export async function registerSchool(req, res) {
 
   res.json({ message: "School added", loggedIn: true });
 }
+
+// POST /school/new-location
+export function addSchoolLocation(req, res) {
+  const school = schools.find((s) => s.id === req.user.schoolID);
+  const location = req.body.location;
+  if (!school) return res.json({ message: "School not found" });
+  if (!location) return res.json({ message: "No location found" });
+  school.locations.push(location);
+  res.json({ message: "Location added: ", location });
+}

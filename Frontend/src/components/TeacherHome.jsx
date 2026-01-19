@@ -143,11 +143,13 @@ export default function TeacherHome({ setAuthenticated }) {
 
   return (
     <div className="teacher-home">
-      <h1>{welcomeMessage}</h1>
+      <div style={{ display: "flex", gap: "50px" }}>
+        <h1>{welcomeMessage}</h1>
 
-      <button id="logoutButton" onClick={logout}>
-        Log out
-      </button>
+        <button id="logoutButton" onClick={logout}>
+          Log out
+        </button>
+      </div>
 
       <div className="autopass-box">
         <h3>AutoPass Locations</h3>

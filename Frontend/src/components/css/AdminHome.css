@@ -145,3 +145,42 @@
     gap: 15px;
   }
 }
+
+.add-location-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.location-input {
+  width: 93%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.add-location-btn {
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-location-btn:hover {
+  background: #1d4ed8;
+}
+
+.location-message {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}

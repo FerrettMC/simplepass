@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { logoutUser, createStudent, createTeacher } from "../backendCalls";
+import {
+  logoutUser,
+  createStudent,
+  createTeacher,
+  addSchoolLocation,
+} from "../backendCalls";
 import { useNavigate } from "react-router-dom";
 import "./css/AdminHome.css";
 
@@ -16,6 +21,23 @@ export default function AdminHome({ setAuthenticated }) {
   const [teacherLastName, setTeacherLastName] = useState("");
   const [teacherSubjects, setTeacherSubjects] = useState("");
   const [teacherMessage, setTeacherMessage] = useState("");
+  const [newSchoolLocation, setNewSchoolLocation] = useState("");
+  const [locationMessage, setLocationMessage] = useState("");
+  const [locationError, setLocationError] = useState(false);
+
+  async function handleAddSchoolLocation() {
+    if (!newSchoolLocation.trim()) {
+      setLocationMessage("Location cannot be empty");
+      setLocationError(true);
+      return;
+    }
+
+    const res = await addSchoolLocation({ location: newSchoolLocation });
+
+    setLocationMessage(`Location added: ${res.location}`);
+    setLocationError(false);
+    setNewSchoolLocation("");
+  }
 
   async function logout() {
     const res = await logoutUser();
@@ -168,6 +190,39 @@ export default function AdminHome({ setAuthenticated }) {
               }}
             >
               {teacherMessage}
+            </p>
+          )}
+        </div>
+        {/* --- School Location Card --- */}
+        <div className="add-location-box">
+          <h2>Add School Location</h2>
+
+          <input
+            placeholder="Location Name"
+            value={newSchoolLocation}
+            onChange={(e) => setNewSchoolLocation(e.target.value)}
+            className="location-input"
+            onKeyDown={(e) => e.key === "Enter" && handleAddSchoolLocation()}
+          />
+
+          <button
+            className="add-location-btn"
+            onClick={handleAddSchoolLocation}
+          >
+            Add Location
+          </button>
+
+          {locationMessage && (
+            <p
+              className="location-message"
+              style={{
+                background: locationError ? "#fdedec" : "#ecfdf5",
+                border: locationError
+                  ? "1px solid #e76e6e"
+                  : "1px solid #6ee7b7",
+              }}
+            >
+              {locationMessage}
             </p>
           )}
         </div>

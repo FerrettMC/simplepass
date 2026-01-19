@@ -165,7 +165,9 @@ export default function StudentHome({ setAuthenticated }) {
       >
         <h1 style={{ marginTop: 30, lineHeight: "1" }}>{welcomeMessage}</h1>
 
-        <button onClick={logout}>Log out</button>
+        <button onClick={logout} style={{ background: "red" }}>
+          Log out
+        </button>
       </div>
 
       {/* PASS CARD */}
@@ -268,6 +270,7 @@ export default function StudentHome({ setAuthenticated }) {
       {/* PURPOSE */}
       <label>Purpose (optional):</label>
       <input
+        style={{ width: "91%" }}
         type="text"
         className="purposeInput"
         value={purpose}

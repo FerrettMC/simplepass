@@ -263,6 +263,19 @@ export async function removeTeacherAutopassLocation({ location }) {
   }
 }
 
+export async function addSchoolLocation({ location }) {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/school/new-location",
+      { location },
+      { withCredentials: true },
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function logoutUser() {
   try {
     const res = await axios.post(
