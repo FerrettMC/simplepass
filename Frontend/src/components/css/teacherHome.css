@@ -18,7 +18,7 @@
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
-  margin-bottom: 20px;
+  height: 35px;
 }
 
 #logoutButton:hover {
@@ -174,11 +174,11 @@
   line-height: 1;
 }
 
-/* Nudge both buttons up a bit to visually center them */
-.delete-btn,
-.add-location-row button {
+/* Only nudge buttons inside the AutoPass box */
+.autopass-box .delete-btn,
+.autopass-box .add-location-row button {
   position: relative;
-  top: 3px; /* try -2, -3, or -4 until it looks perfect */
+  top: 3px;
 }
 
 /* Override global button hover styles inside the AutoPass box */
@@ -204,5 +204,26 @@
 }
 
 .autopass-box ul::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.pass-section {
+  max-height: 500px; /* fits about 2–3 cards depending on size */
+  overflow-y: auto;
+  padding-right: 6px; /* space for scrollbar */
+  margin-bottom: 20px;
+}
+
+/* Optional: nicer scrollbar */
+.pass-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pass-section::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.pass-section::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }

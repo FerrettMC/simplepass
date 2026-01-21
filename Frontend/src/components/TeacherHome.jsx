@@ -11,6 +11,12 @@ import {
   removeTeacherAutopassLocation,
 } from "../backendCalls";
 import "./css/TeacherHome.css";
+import { io } from "socket.io-client";
+
+// IMPORTANT: use your backend LAN IP
+const socket = io("http://192.168.1.205:3000", {
+  withCredentials: true,
+});
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +45,17 @@ export default function TeacherHome({ setAuthenticated }) {
       setPasses(res.passes);
     }
   }
+
+  useEffect(() => {
+    socket.on("passesUpdated", () => {
+      console.log("Real-time update received");
+      loadPasses(); // refresh your passes instantly
+    });
+
+    return () => {
+      socket.off("passesUpdated");
+    };
+  }, []);
 
   async function handleApprove(passID) {
     await startPass(passID);
@@ -143,7 +160,7 @@ export default function TeacherHome({ setAuthenticated }) {
 
   return (
     <div className="teacher-home">
-      <div style={{ display: "flex", gap: "20vw" }}>
+      <div style={{ display: "flex", gap: "20vw", alignItems: "center" }}>
         <h1>{welcomeMessage}</h1>
 
         <button id="logoutButton" onClick={logout}>
@@ -192,57 +209,58 @@ export default function TeacherHome({ setAuthenticated }) {
 
       {waitingPasses.length === 0 && <p>No passes waiting.</p>}
 
-      {waitingPasses.map((p) => (
-        <div key={p.pass.id} className="pass-card">
-          <p>
-            <strong>Student:</strong> {p.studentName}
-          </p>
-          <p>
-            <strong>Grade:</strong> {p.gradeLevel}
-          </p>
-          <p>
-            <strong>Destination:</strong>{" "}
-            {getDestinationName(p.pass.destination)}
-          </p>
+      <div className="pass-section">
+        {waitingPasses.map((p) => (
+          <div key={p.pass.id} className="pass-card">
+            <p>
+              <strong>Student:</strong> {p.studentName}
+            </p>
+            <p>
+              <strong>Grade:</strong> {p.gradeLevel}
+            </p>
+            <p>
+              <strong>Destination:</strong>{" "}
+              {getDestinationName(p.pass.destination)}
+            </p>
+            <p>
+              <strong>Purpose:</strong> {p.pass.purpose || "None"}
+            </p>
 
-          <p>
-            <strong>Purpose:</strong> {p.pass.purpose || "None"}
-          </p>
-
-          <button onClick={() => handleApprove(p.pass.id)}>Approve</button>
-          <button onClick={() => handleDeny(p.pass.id)}>Deny</button>
-        </div>
-      ))}
+            <button onClick={() => handleApprove(p.pass.id)}>Approve</button>
+            <button onClick={() => handleDeny(p.pass.id)}>Deny</button>
+          </div>
+        ))}
+      </div>
 
       {/* ACTIVE PASSES */}
       <h2>Ongoing Passes</h2>
 
       {activePasses.length === 0 && <p>No active passes.</p>}
 
-      {activePasses.map((p) => (
-        <div key={p.pass.id} className="pass-card active">
-          <p>
-            <strong>Student:</strong> {p.studentName}
-          </p>
-          <p>
-            <strong>Grade:</strong> {p.gradeLevel}
-          </p>
-          <p>
-            <strong>Destination:</strong>{" "}
-            {getDestinationName(p.pass.destination)}
-          </p>
+      <div className="pass-section">
+        {activePasses.map((p) => (
+          <div key={p.pass.id} className="pass-card active">
+            <p>
+              <strong>Student:</strong> {p.studentName}
+            </p>
+            <p>
+              <strong>Grade:</strong> {p.gradeLevel}
+            </p>
+            <p>
+              <strong>Destination:</strong>{" "}
+              {getDestinationName(p.pass.destination)}
+            </p>
+            <p>
+              <strong>Purpose:</strong> {p.pass.purpose || "None"}
+            </p>
+            <p>
+              <strong>Time:</strong> {timers[p.pass.id] || "00:00"}
+            </p>
 
-          <p>
-            <strong>Purpose:</strong> {p.pass.purpose || "None"}
-          </p>
-
-          <p>
-            <strong>Time:</strong> {timers[p.pass.id] || "00:00"}
-          </p>
-
-          <button onClick={() => handleEnd(p.pass.id)}>End Pass</button>
-        </div>
-      ))}
+            <button onClick={() => handleEnd(p.pass.id)}>End Pass</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

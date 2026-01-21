@@ -1,6 +1,7 @@
 import users from "../models/users.js";
 import schools from "../models/schools.js";
 import crypto from "crypto";
+import { io } from "../server.js";
 
 // POST /pass/create
 export function createPass(req, res) {
@@ -55,6 +56,7 @@ export function createPass(req, res) {
   };
 
   user.pass = pass;
+  io.emit("passesUpdated");
 
   res.json({ message: "Pass created", pass });
 }
@@ -110,6 +112,8 @@ export function startPass(req, res) {
   pass.status = "active";
   pass.start = Date.now();
 
+  io.emit("passesUpdated");
+
   res.json({ message: "Pass started", pass });
 }
 
@@ -154,6 +158,8 @@ export function endPass(req, res) {
   pass.status = "ended";
   pass.end = Date.now();
 
+  io.emit("passesUpdated");
+
   res.json({ message: "Pass ended", pass });
 }
 
@@ -197,6 +203,7 @@ export function cancelPass(req, res) {
 
   pass.status = "cancelled";
   pass.start = Date.now();
+  io.emit("passesUpdated");
 
   res.json({ message: "Pass cancelled", pass });
 }

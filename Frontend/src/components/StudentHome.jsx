@@ -13,6 +13,13 @@ import "./css/StudentHome.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { io } from "socket.io-client";
+
+// IMPORTANT: use your backend LAN IP
+const socket = io("http://192.168.1.205:3000", {
+  withCredentials: true,
+});
+
 export default function StudentHome({ setAuthenticated }) {
   const navigate = useNavigate();
 
@@ -86,6 +93,22 @@ export default function StudentHome({ setAuthenticated }) {
     }
 
     loadData();
+  }, []);
+
+  async function loadPasse() {
+    const currentUser = await getCurrentUser();
+    if (currentUser.pass) setPass(currentUser.pass);
+  }
+
+  useEffect(() => {
+    socket.on("passesUpdated", () => {
+      console.log("Real-time update received");
+      loadPasse(); // refresh your passes instantly
+    });
+
+    return () => {
+      socket.off("passesUpdated");
+    };
   }, []);
 
   // Timer effect
