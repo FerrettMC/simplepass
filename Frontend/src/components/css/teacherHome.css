@@ -191,6 +191,7 @@
   overflow-y: auto;
   padding-left: 20px;
   margin: 0;
+  max-height: 100px;
 }
 
 .autopass-box ul::-webkit-scrollbar {

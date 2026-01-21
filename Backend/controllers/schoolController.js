@@ -88,7 +88,7 @@ export async function registerSchool(req, res) {
     adminLastName: req.body.adminLastName,
     adminEmail: req.body.adminEmail,
     maxPassesDaily: 5,
-    locations: ["hartwig"],
+    locations: [],
     teachers: [],
     adminID,
     createdAt: Date.now(),
@@ -132,9 +132,31 @@ export async function registerSchool(req, res) {
 // POST /school/new-location
 export function addSchoolLocation(req, res) {
   const school = schools.find((s) => s.id === req.user.schoolID);
-  const location = req.body.location;
-  if (!school) return res.json({ message: "School not found" });
-  if (!location) return res.json({ message: "No location found" });
+  let location = req.body.location;
+
+  if (!school) return res.status(400).json({ location: "No school found!" });
+  if (!location)
+    return res.status(400).json({ location: "No location found!" });
+  if (school.locations.includes(location)) {
+    return res.status(400).json({ location: "Location already in school" });
+  }
+  location = location.toLowerCase();
   school.locations.push(location);
-  res.json({ message: "Location added: ", location });
+  res.json({ message: `Location added: ${location}`, location });
+}
+
+// POST /school/change-max-passes
+export function changeMaxPasses(req, res) {
+  const school = schools.find((s) => s.id === req.user.schoolID);
+  let passes = req.body.passes;
+  if (passes < 1 || passes > 25) {
+    return res.status(400).json({ message: "Passes not in accepted range" });
+  }
+
+  if (!school) return res.status(400).json({ message: "No school found!" });
+  if (!passes) return res.status(400).json({ message: "No location found!" });
+
+  passes = Number(passes);
+  school.maxPassesDaily = passes;
+  res.json({ message: `Max passes changed to: ${passes}`, passes });
 }

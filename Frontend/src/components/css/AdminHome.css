@@ -29,6 +29,8 @@
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
+  margin-top: -15px;
+  margin-bottom: -5px;
   transition:
     background 0.2s,
     transform 0.2s;
@@ -151,7 +153,7 @@
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  width: 300px;
+  width: 395px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -175,6 +177,17 @@
   font-size: 14px;
 }
 
+.set-passes-btn {
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
 .add-location-btn:hover {
   background: #1d4ed8;
 }
@@ -183,4 +196,144 @@
   padding: 10px;
   border-radius: 8px;
   font-size: 14px;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-box {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  width: 350px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.popup-box h3 {
+  margin-top: 0;
+}
+
+.close-popup-btn {
+  margin-top: 15px;
+  padding: 8px 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.view-locations-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.students-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 395px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+}
+
+.students-list {
+  flex: 1; /* take all remaining space */
+  overflow-y: auto; /* scroll only inside the list */
+  margin-top: 5px;
+  padding-right: 6px;
+}
+
+.student-row {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.students-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.students-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.students-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.delete-student-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  height: fit-content;
+  margin-top: 0px;
+}
+
+.delete-student-btn:hover {
+  background: #b91c1c;
+}
+
+.student-search {
+  width: 95.5%;
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.settings-bar {
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: fit-content;
+  cursor: pointer;
+  margin-bottom: 20px;
+  border: 1px solid #d1d5db;
+  transition: 0.2s;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-bar:hover {
+  background: #e5e7eb;
+}
+
+.settings-input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0 15px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.settings-message {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  padding: 6px;
+  border-radius: 6px;
+  margin-bottom: 10px;
 }

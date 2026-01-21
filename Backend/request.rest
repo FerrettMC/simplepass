@@ -24,7 +24,7 @@ Content-Type: application/json
   "adminName": "Bub",
   "adminLastName": "Sicle",
   "username": "sarah.t",
-  "adminEmail": "bub@bub.org",
+  "adminEmail": "b@b.com",
   "password": "12345678",
   "inviteCode": "123" 
 }

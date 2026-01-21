@@ -161,6 +161,7 @@ export default function StudentHome({ setAuthenticated }) {
           alignItems: "center",
           paddingBottom: "10px",
           borderBottom: "1px solid #e5e7eb",
+          gap: "20vw",
         }}
       >
         <h1 style={{ marginTop: 30, lineHeight: "1" }}>{welcomeMessage}</h1>

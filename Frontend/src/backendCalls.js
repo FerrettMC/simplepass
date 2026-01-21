@@ -270,9 +270,89 @@ export async function addSchoolLocation({ location }) {
       { location },
       { withCredentials: true },
     );
+
+    return {
+      error: false,
+      message: res.data.message,
+      data: res.data,
+    };
+  } catch (err) {
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Unknown error";
+
+    return {
+      error: true,
+      message: msg,
+    };
+  }
+}
+
+export async function getStudents() {
+  try {
+    const res = await axios.get("http://localhost:3000/students", {
+      withCredentials: true,
+    });
+    console.log(res.data);
     return res.data;
   } catch (err) {
-    console.log(err);
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Unknown error";
+
+    return {
+      students: [],
+      message: msg,
+    };
+  }
+}
+
+export async function deleteStudent({ id }) {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/students/delete",
+      { id: id },
+      { withCredentials: true },
+    );
+    console.log(res.data);
+    return res.data;
+  } catch (err) {
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Unknown error";
+
+    return {
+      students: [],
+      message: msg,
+    };
+  }
+}
+export async function changeMaxPasses({ passes }) {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/school/change-max-passes",
+      { passes: passes },
+      { withCredentials: true },
+    );
+    console.log(res.data);
+    return res.data;
+  } catch (err) {
+    const msg =
+      err.response?.data?.message ||
+      err.response?.data ||
+      err.message ||
+      "Unknown error";
+
+    return {
+      error: true,
+      message: msg,
+    };
   }
 }
 

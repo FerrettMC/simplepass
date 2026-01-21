@@ -6,6 +6,7 @@ import {
   registerSchool,
   getSchool,
   addSchoolLocation,
+  changeMaxPasses,
 } from "../controllers/schoolController.js";
 import authenticateToken from "../middleware/authenticateToken.js";
 import requireAdmin from "../middleware/requireAdmin.js";
@@ -22,6 +23,12 @@ router.post(
   authenticateToken,
   requireAdmin,
   addSchoolLocation,
+);
+router.post(
+  "/change-max-passes",
+  authenticateToken,
+  requireAdmin,
+  changeMaxPasses,
 );
 
 export default router;

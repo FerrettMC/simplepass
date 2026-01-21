@@ -51,14 +51,24 @@ export default function Login({ setAuthenticated }) {
       <h1 style={{ marginBottom: "15px", fontSize: "35px" }}>SimplePass</h1>
 
       <h1 style={{ fontSize: "20px" }}>For students and teachers:</h1>
-      <GoogleLogin
-        onSuccess={async (credentialResponse) => {
-          const token = credentialResponse.credential;
-          const res = await loginWithGoogle(token);
-          navigateToCorrectPage(res);
+      <div
+        style={{
+          transform: "scale(1.3)",
+          transformOrigin: "top",
+          marginBottom: "30px",
+          marginTop: "10px",
         }}
-        onError={() => console.log("Google Login Failed")}
-      />
+      >
+        <GoogleLogin
+          onSuccess={async (credentialResponse) => {
+            const token = credentialResponse.credential;
+            const res = await loginWithGoogle(token);
+            navigateToCorrectPage(res);
+          }}
+          onError={() => console.log("Google Login Failed")}
+        />
+      </div>
+
       {googleMessage && <p style={{ color: "red" }}>Error logging in</p>}
       {!googleMessage && <div style={{ marginBottom: "15px" }}></div>}
 
