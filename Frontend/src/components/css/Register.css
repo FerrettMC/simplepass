@@ -3,6 +3,7 @@
   max-width: 420px;
   width: 100%;
   margin: 60px auto;
+
   padding: 32px;
   background: #ffffff;
   border-radius: 12px;
@@ -40,7 +41,10 @@
   border: 1px solid #d1d5db;
   font-size: 15px;
   box-sizing: border-box;
-  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
 }
 
 .register-item:hover {
@@ -114,7 +118,9 @@
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 #register-button:hover:not(.disabled) {
@@ -139,5 +145,15 @@
   .register-container {
     margin: 30px 16px;
     padding: 24px;
+  }
+}
+
+.goBack {
+  margin-left: -25px;
+  margin-bottom: -10px;
+} /* Large screens (desktop) */
+@media (min-width: 104px) {
+  .goBack {
+    margin-bottom: -20px; /* double the margin */
   }
 }
