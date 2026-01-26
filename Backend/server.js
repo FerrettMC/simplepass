@@ -1,10 +1,10 @@
 import app from "./app.js";
 import "dotenv/config";
+import { connectDB } from "./data/db.js";
 import http from "http";
 import { Server } from "socket.io";
-
 const PORT = 3000;
-
+await connectDB();
 // Create raw HTTP server
 const server = http.createServer(app);
 

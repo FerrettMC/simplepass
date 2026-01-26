@@ -1,4 +1,4 @@
-import users from "../models/users.js";
+import User from "../data/user.js";
 import generateToken from "../utils/generateToken.js";
 import googleClient from "../utils/googleClient.js";
 import bcrypt from "bcryptjs";
@@ -9,10 +9,11 @@ export function getCurrentUser(req, res) {
   const token = req.cookies.jwt;
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
     if (err) return res.sendStatus(403);
 
-    const fullUser = users.find((u) => u.id === user.id);
+    const fullUser = await User.findOne({ id: user.id });
+
     if (!fullUser) return res.sendStatus(404);
 
     res.json({
@@ -46,11 +47,14 @@ export async function googleLogin(req, res) {
     const payload = ticket.getPayload();
     const { email } = payload;
 
-    const user = users.find((u) => u.email === email);
+    const user = await User.findOne({ email });
+
     if (!user) return res.status(404).json({ message: "No account found" });
 
     if (!user.firstName) user.firstName = payload.given_name;
     if (!user.lastName) user.lastName = payload.family_name;
+
+    await user.save();
 
     const accessToken = generateToken(user.id, user.role, user.schoolID);
 
@@ -75,7 +79,7 @@ export async function googleLogin(req, res) {
 
 // POST /users/login
 export async function login(req, res) {
-  const user = users.find((u) => u.email === req.body.email);
+  const user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).send("Cannot find user");
 
   const match = await bcrypt.compare(req.body.password, user.password);

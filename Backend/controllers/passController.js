@@ -1,10 +1,10 @@
-import users from "../models/users.js";
-import schools from "../models/schools.js";
+import User from "../data/user.js";
+import School from "../data/school.js";
 import crypto from "crypto";
 import { io } from "../server.js";
 
 // POST /pass/create
-export function createPass(req, res) {
+export async function createPass(req, res) {
   const { destination, fromTeacher, purpose } = req.body;
 
   if (req.user.role !== "student")
@@ -16,11 +16,15 @@ export function createPass(req, res) {
   if (purpose && purpose.length > 50)
     return res.json({ message: "Purpose too long." });
 
-  const user = users.find((u) => u.id === req.user.id);
-  const school = schools.find((s) => s.id === user.schoolID);
-  const teacher = users.find(
-    (u) => u.role === "teacher" && u.id === fromTeacher,
-  );
+  const user = await User.findOne({ id: req.user.id });
+
+  const school = await School.findOne({ id: user.schoolID });
+
+  const teacher = await User.findOne({
+    id: fromTeacher,
+    role: "teacher",
+    schoolID: user.schoolID,
+  });
 
   if (user.pass && user.pass.status === "active")
     return res.json({ message: "Pass already ongoing!" });
@@ -28,9 +32,11 @@ export function createPass(req, res) {
   if (user.dayPasses >= school.maxPassesDaily)
     return res.json({ message: "Max passes reached!" });
 
-  const teacherDestination = users.find(
-    (u) => u.role === "teacher" && u.id === destination,
-  );
+  const teacherDestination = await User.findOne({
+    id: destination,
+    role: "teacher",
+    schoolID: user.schoolID,
+  });
 
   const isTeacherDestination = Boolean(teacherDestination);
   const isLocationDestination = school.locations.includes(destination);
@@ -56,13 +62,15 @@ export function createPass(req, res) {
   };
 
   user.pass = pass;
+  await user.save();
+
   io.emit("passesUpdated");
 
   res.json({ message: "Pass created", pass });
 }
 
 // POST /pass/start
-export function startPass(req, res) {
+export async function startPass(req, res) {
   let user = null;
   let pass = null;
 
@@ -75,7 +83,7 @@ export function startPass(req, res) {
       });
     }
 
-    user = users.find((u) => u.pass && u.pass.id === req.body.passID);
+    user = await User.findOne({ "pass.id": req.body.passID });
 
     if (!user) {
       return res.json({ message: "Pass not found" });
@@ -88,14 +96,15 @@ export function startPass(req, res) {
     }
 
     pass = user.pass;
-    user.dayPasses++;
+    user.dayPasses = (user.dayPasses || 0) + 1;
   }
 
   // Students starting their own pass
   else {
-    user = users.find((u) => u.id === req.user.id);
+    user = await User.findOne({ id: req.user.id });
+
     pass = user.pass;
-    user.dayPasses++;
+    user.dayPasses = (user.dayPasses || 0) + 1;
   }
 
   // No pass or wrong status
@@ -109,8 +118,9 @@ export function startPass(req, res) {
   }
 
   // Start the pass
-  pass.status = "active";
-  pass.start = Date.now();
+  user.pass.status = "active";
+  user.pass.start = Date.now();
+  await user.save();
 
   io.emit("passesUpdated");
 
@@ -118,7 +128,7 @@ export function startPass(req, res) {
 }
 
 // POST /pass/end
-export function endPass(req, res) {
+export async function endPass(req, res) {
   let user = null;
   let pass = null;
 
@@ -131,7 +141,7 @@ export function endPass(req, res) {
       });
     }
 
-    user = users.find((u) => u.pass && u.pass.id === req.body.passID);
+    user = await User.findOne({ "pass.id": req.body.passID });
 
     if (!user) {
       return res.json({ message: "Pass not found" });
@@ -148,15 +158,17 @@ export function endPass(req, res) {
 
   // Students ending their own pass
   else {
-    user = users.find((u) => u.id === req.user.id);
+    user = await User.findOne({ id: req.user.id });
+
     pass = user.pass;
   }
 
   if (!pass || pass.status !== "active")
     return res.json({ message: "No active pass to end" });
 
-  pass.status = "ended";
-  pass.end = Date.now();
+  user.pass.status = "ended";
+  user.pass.end = Date.now();
+  await user.save();
 
   io.emit("passesUpdated");
 
@@ -164,7 +176,7 @@ export function endPass(req, res) {
 }
 
 // POST /pass/cancel
-export function cancelPass(req, res) {
+export async function cancelPass(req, res) {
   let user = null;
   let pass = null;
 
@@ -177,7 +189,7 @@ export function cancelPass(req, res) {
       });
     }
 
-    user = users.find((u) => u.pass && u.pass.id === req.body.passID);
+    user = await User.findOne({ "pass.id": req.body.passID });
 
     if (!user) {
       return res.json({ message: "Pass not found" });
@@ -194,15 +206,18 @@ export function cancelPass(req, res) {
 
   // Students cancelling their own pass
   else {
-    user = users.find((u) => u.id === req.user.id);
+    user = await User.findOne({ id: req.user.id });
+
     pass = user.pass;
   }
 
   if (!pass || pass.status !== "waiting")
     return res.json({ message: "No pending pass to cancel" });
 
-  pass.status = "cancelled";
-  pass.start = Date.now();
+  user.pass.status = "cancelled";
+  user.pass.start = Date.now();
+  await user.save();
+
   io.emit("passesUpdated");
 
   res.json({ message: "Pass cancelled", pass });

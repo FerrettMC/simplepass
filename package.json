@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.5",
     "socket.io": "^4.8.3"
   }
 }

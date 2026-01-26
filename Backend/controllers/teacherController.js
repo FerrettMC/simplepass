@@ -1,12 +1,30 @@
-import users from "../models/users.js";
-import schools from "../models/schools.js";
+import User from "../data/user.js";
+import School from "../data/school.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
 // GET /teachers
-export function getTeachers(req, res) {
-  const teachers = users.filter((u) => u.role === "teacher");
-  res.json(teachers);
+export async function getTeachers(req, res) {
+  try {
+    // 1. Fetch the logged-in user (admin)
+    const admin = await User.findOne({ id: req.user.id });
+
+    if (!admin) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+    // 2. Fetch teachers from MongoDB
+    const teachers = await User.find({
+      schoolID: admin.schoolID,
+      role: "teacher",
+    });
+
+    // 3. Return them
+    res.json(teachers);
+  } catch (err) {
+    console.error("Error fetching teachers:", err);
+    res.status(500).json({ message: "Server error fetching teachers" });
+  }
 }
 
 // POST /teachers/create
@@ -20,13 +38,18 @@ export async function createTeacher(req, res) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ message: "Invalid email format" });
   }
-  const userFree = users.find((u) => u.email === email);
-  if (userFree) return res.status(400).json({ message: "Email in use!" });
+
+  // Check if email already exists
+  const userFree = await User.findOne({ email });
+  if (userFree) {
+    return res.status(400).json({ message: "Email in use!" });
+  }
 
   const subjectsArray = subjects.split(",").map((s) => s.trim());
   const hashedPassword = await bcrypt.hash("1", 10);
 
-  const teacher = {
+  // Create teacher user
+  const teacher = await User.create({
     id: crypto.randomUUID(),
     username: email.split("@")[0],
     firstName,
@@ -41,12 +64,20 @@ export async function createTeacher(req, res) {
     pass: null,
     createdAt: Date.now(),
     schoolID: req.user.schoolID,
-    password: hashedPassword, // TODO: Make something out of this lol (maybe remove)
-  };
+    password: hashedPassword,
+  });
 
-  const school = schools.find((s) => s.id === req.user.schoolID);
-  school.teachers.push(teacher);
-  users.push(teacher);
+  // Add teacher reference to school
+  const school = await School.findOne({ id: req.user.schoolID });
+
+  school.teachers.push({
+    id: teacher.id,
+    firstName,
+    lastName,
+    email,
+  });
+
+  await school.save();
 
   res.json({
     message: `Teacher created with email ${teacher.email}`,
@@ -55,22 +86,23 @@ export async function createTeacher(req, res) {
 }
 
 // GET /teachers/passes
-export function getTeacherPasses(req, res) {
+export async function getTeacherPasses(req, res) {
   if (req.user.role !== "teacher") {
     return res.status(403).json({ message: "Must be teacher" });
   }
 
   // Find the teacher making the request
-  const teacher = users.find((u) => u.id === req.user.id);
+  const teacher = await User.findOne({ id: req.user.id });
 
   if (!teacher) {
     return res.status(404).json({ message: "Teacher not found" });
   }
 
   // Get all students in the same school
-  const students = users.filter(
-    (u) => u.role === "student" && u.schoolID === teacher.schoolID,
-  );
+  const students = await User.find({
+    role: "student",
+    schoolID: teacher.schoolID,
+  });
 
   // Collect passes that exist and are waiting
   const waitingPasses = students
@@ -86,9 +118,11 @@ export function getTeacherPasses(req, res) {
 }
 
 // POST /teachers/add-autopass-location
-export function addTeacherAutoPassLocation(req, res) {
-  const user = users.find((u) => u.id === req.user.id);
-  const school = schools.find((s) => s.id === req.user.schoolID);
+export async function addTeacherAutoPassLocation(req, res) {
+  const user = await User.findOne({ id: req.user.id });
+
+  const school = await School.findOne({ id: req.user.schoolID });
+
   const location = req.body.location;
 
   if (!location) {
@@ -113,6 +147,7 @@ export function addTeacherAutoPassLocation(req, res) {
   }
 
   user.autoPassLocations.push(location);
+  await user.save();
 
   return res.json({
     message: "Location added",
@@ -121,9 +156,10 @@ export function addTeacherAutoPassLocation(req, res) {
 }
 
 // POST /teachers/remove-autopass-location
-export function removeTeacherAutoPassLocation(req, res) {
-  const user = users.find((u) => u.id === req.user.id);
-  const school = schools.find((s) => s.id === req.user.schoolID);
+export async function removeTeacherAutoPassLocation(req, res) {
+  const user = await User.findOne({ id: req.user.id });
+
+  const school = await School.findOne({ id: req.user.schoolID });
   const location = req.body.location;
 
   if (!location) {
@@ -150,6 +186,8 @@ export function removeTeacherAutoPassLocation(req, res) {
   user.autoPassLocations = user.autoPassLocations.filter(
     (loc) => loc !== location,
   );
+
+  await user.save();
 
   return res.json({
     message: "Location removed",

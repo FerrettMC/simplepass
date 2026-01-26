@@ -28,6 +28,9 @@ Content-Type: application/json
   "password": "12345678",
   "inviteCode": "123" 
 }
+###
 
+GET http://localhost:3000/test
 
+###
 

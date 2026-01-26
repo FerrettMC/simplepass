@@ -1,20 +1,31 @@
-import schools from "../models/schools.js";
-import users from "../models/users.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import User from "../data/user.js";
+import School from "../data/school.js";
 import generateToken from "../utils/generateToken.js";
 
 // GET /school
-export function getSchools(req, res) {
-  res.json(schools);
+export async function getSchools(req, res) {
+  try {
+    const schools = await School.find(); // fetch all schools from MongoDB
+    res.json(schools);
+  } catch (err) {
+    console.error("Error fetching schools:", err);
+    res.status(500).json({ message: "Server error fetching schools" });
+  }
 }
 
 // GET /school/teachers
-export function getSchoolTeachers(req, res) {
-  const school = schools.find((s) => s.id === req.user.schoolID);
+export async function getSchoolTeachers(req, res) {
+  const school = await School.findOne({ id: req.user.schoolID });
   if (!school) return res.json({ message: "School not found" });
 
-  const teacherObjects = school.teachers.map((t) => ({
+  const teachers = await User.find({
+    schoolID: req.user.schoolID,
+    role: "teacher",
+  });
+
+  const teacherObjects = teachers.map((t) => ({
     id: t.id,
     firstName: t.firstName,
     lastName: t.lastName,
@@ -28,16 +39,15 @@ export function getSchoolTeachers(req, res) {
 }
 
 // GET /school/destinations
-export function getDestinations(req, res) {
-  const school = schools.find((s) => s.id === req.user.schoolID);
+export async function getDestinations(req, res) {
+  const school = await School.findOne({ id: req.user.schoolID });
   if (!school) return res.json({ message: "School not found" });
-
   res.json({ destinations: school.locations });
 }
 
 // GET /school/user
-export function getSchool(req, res) {
-  const school = schools.find((s) => s.id === req.user.schoolID);
+export async function getSchool(req, res) {
+  const school = await School.findOne({ id: req.user.schoolID });
   if (!school) return res.json({ message: "School not found" });
 
   res.json({
@@ -52,111 +62,141 @@ export function getSchool(req, res) {
 
 // POST /school/register
 export async function registerSchool(req, res) {
-  const required = [
-    "name",
-    "domain",
-    "adminName",
-    "adminLastName",
-    "username",
-    "adminEmail",
-    "password",
-    "inviteCode",
-  ];
-
-  const missing = required.filter((f) => !req.body[f]);
-  if (missing.length) {
-    return res
-      .status(400)
-      .json({ message: "Missing required fields", missing });
+  try {
+    const required = [
+      "name",
+      "domain",
+      "adminName",
+      "adminLastName",
+      "username",
+      "adminEmail",
+      "password",
+      "inviteCode",
+    ];
+    const missing = required.filter((f) => !req.body[f]);
+    if (missing.length) {
+      return res
+        .status(400)
+        .json({ message: "Missing required fields", missing });
+    }
+    if (req.body.inviteCode !== process.env.INVITE_CODE) {
+      return res.status(400).json({ message: "Invalid invite code" });
+    } // Check if school name already exists
+    const existingSchool = await School.findOne({ name: req.body.name });
+    if (existingSchool) {
+      return res.status(401).json({ message: "School name taken!" });
+    } // Hash admin password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const adminID = crypto.randomUUID();
+    const schoolID = crypto.randomUUID();
+    // Create school document
+    const school = await School.create({
+      id: schoolID,
+      name: req.body.name,
+      domain: req.body.domain,
+      adminFirstName: req.body.adminName,
+      adminLastName: req.body.adminLastName,
+      adminEmail: req.body.adminEmail,
+      maxPassesDaily: 5,
+      locations: [],
+      teachers: [],
+      adminID,
+      createdAt: Date.now(),
+    });
+    // Create admin user
+    const admin = await User.create({
+      id: adminID,
+      username: req.body.username,
+      firstName: req.body.adminName,
+      lastName: req.body.adminLastName,
+      email: req.body.adminEmail,
+      profile: null,
+      autoPassLocations: null,
+      password: hashedPassword,
+      role: "admin",
+      gradeLevel: null,
+      subjects: null,
+      lastReset: null,
+      dayPasses: null,
+      pass: null,
+      createdAt: Date.now(),
+      schoolID: schoolID,
+    });
+    // Generate JWT
+    const accessToken = generateToken(admin.id, admin.role, admin.schoolID);
+    res.cookie("jwt", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+    res.json({ message: "School added", loggedIn: true });
+  } catch (err) {
+    console.error("Error registering school:", err);
+    res.status(500).json({ message: "Server error registering school" });
   }
-
-  if (req.body.inviteCode !== process.env.INVITE_CODE) {
-    return res.status(400).json({ message: "Invalid invite code" });
-  }
-
-  if (schools.some((s) => s.name === req.body.name)) {
-    return res.status(401).json({ message: "School name taken!" });
-  }
-
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  const adminID = crypto.randomUUID();
-
-  const school = {
-    name: req.body.name,
-    domain: req.body.domain,
-    adminFirstName: req.body.adminName,
-    adminLastName: req.body.adminLastName,
-    adminEmail: req.body.adminEmail,
-    maxPassesDaily: 5,
-    locations: [],
-    teachers: [],
-    adminID,
-    createdAt: Date.now(),
-    id: crypto.randomUUID(),
-  };
-
-  const admin = {
-    id: adminID,
-    username: req.body.username,
-    firstName: req.body.adminName,
-    lastName: req.body.adminLastName,
-    email: req.body.adminEmail,
-    profile: null,
-    autoPassLocations: null,
-    password: hashedPassword,
-    role: "admin",
-    gradeLevel: null,
-    subjects: null,
-    lastReset: null,
-    dayPasses: null,
-    pass: null,
-    createdAt: Date.now(),
-    schoolID: school.id,
-  };
-
-  users.push(admin);
-  schools.push(school);
-
-  const accessToken = generateToken(admin.id, admin.role, admin.schoolID);
-
-  res.cookie("jwt", accessToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 24 * 60 * 60 * 1000,
-  });
-
-  res.json({ message: "School added", loggedIn: true });
 }
 
 // POST /school/new-location
-export function addSchoolLocation(req, res) {
-  const school = schools.find((s) => s.id === req.user.schoolID);
-  let location = req.body.location;
+export async function addSchoolLocation(req, res) {
+  try {
+    const location = req.body.location?.toLowerCase();
 
-  if (!school) return res.status(400).json({ location: "No school found!" });
-  if (!location)
-    return res.status(400).json({ location: "No location found!" });
-  if (school.locations.includes(location)) {
-    return res.status(400).json({ location: "Location already in school" });
+    if (!location) {
+      return res.status(400).json({ message: "No location found!" });
+    }
+
+    // Fetch school from MongoDB
+    const school = await School.findOne({ id: req.user.schoolID });
+
+    if (!school) {
+      return res.status(400).json({ message: "No school found!" });
+    }
+
+    // Check for duplicates
+    if (school.locations.includes(location)) {
+      return res.status(400).json({ message: "Location already in school" });
+    }
+
+    // Add location
+    school.locations.push(location);
+
+    // Save updated school document
+    await school.save();
+
+    res.json({ message: `Location added: ${location}`, location });
+  } catch (err) {
+    console.error("Error adding school location:", err);
+    res.status(500).json({ message: "Server error adding location" });
   }
-  location = location.toLowerCase();
-  school.locations.push(location);
-  res.json({ message: `Location added: ${location}`, location });
 }
 
 // POST /school/change-max-passes
-export function changeMaxPasses(req, res) {
-  const school = schools.find((s) => s.id === req.user.schoolID);
-  let passes = req.body.passes;
-  if (passes < 1 || passes > 25) {
-    return res.status(400).json({ message: "Passes not in accepted range" });
+export async function changeMaxPasses(req, res) {
+  try {
+    const school = await School.findOne({ id: req.user.schoolID });
+    let passes = req.body.passes;
+
+    if (!school) {
+      return res.status(400).json({ message: "No school found!" });
+    }
+
+    if (!passes && passes !== 0) {
+      return res.status(400).json({ message: "No passes value provided!" });
+    }
+
+    passes = Number(passes);
+
+    if (passes < 1 || passes > 25) {
+      return res.status(400).json({ message: "Passes not in accepted range" });
+    }
+
+    school.maxPassesDaily = passes;
+    await school.save(); // <-- IMPORTANT
+
+    res.json({ message: `Max passes changed to: ${passes}`, passes });
+  } catch (err) {
+    console.error("Error changing max passes:", err);
+    res.status(500).json({ message: "Server error changing max passes" });
   }
-
-  if (!school) return res.status(400).json({ message: "No school found!" });
-  if (!passes) return res.status(400).json({ message: "No location found!" });
-
-  passes = Number(passes);
-  school.maxPassesDaily = passes;
-  res.json({ message: `Max passes changed to: ${passes}`, passes });
 }
