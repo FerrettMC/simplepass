@@ -138,7 +138,7 @@ MONGO_URI=your_mongodb_uri
 
 ```bash
 cd Backend
-npm run dev || node server.js
+npm run dev
 ```
 
 ### Start Frontend
