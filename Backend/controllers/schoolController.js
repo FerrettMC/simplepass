@@ -4,17 +4,6 @@ import User from "../data/user.js";
 import School from "../data/school.js";
 import generateToken from "../utils/generateToken.js";
 
-// GET /school
-export async function getSchools(req, res) {
-  try {
-    const schools = await School.find(); // fetch all schools from MongoDB
-    res.json(schools);
-  } catch (err) {
-    console.error("Error fetching schools:", err);
-    res.status(500).json({ message: "Server error fetching schools" });
-  }
-}
-
 // GET /school/teachers
 export async function getSchoolTeachers(req, res) {
   const school = await School.findOne({ id: req.user.schoolID });

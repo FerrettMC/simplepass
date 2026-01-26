@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  getSchools,
   getSchoolTeachers,
   getDestinations,
   registerSchool,
@@ -13,7 +12,6 @@ import requireAdmin from "../middleware/requireAdmin.js";
 
 const router = Router();
 
-router.get("/", getSchools);
 router.get("/user", authenticateToken, getSchool);
 router.get("/teachers", authenticateToken, getSchoolTeachers);
 router.get("/destinations", authenticateToken, getDestinations);
