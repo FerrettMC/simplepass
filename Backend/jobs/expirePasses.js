@@ -20,6 +20,7 @@ setInterval(async () => {
       if (elapsed > MAX_PASS_DURATION) {
         user.pass.status = "expired";
         user.pass.end = Date.now();
+        user.markModified("pass");
         await user.save();
       }
     }

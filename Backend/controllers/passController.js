@@ -120,6 +120,8 @@ export async function startPass(req, res) {
   // Start the pass
   user.pass.status = "active";
   user.pass.start = Date.now();
+  user.markModified("pass");
+
   await user.save();
 
   io.emit("passesUpdated");
@@ -168,6 +170,8 @@ export async function endPass(req, res) {
 
   user.pass.status = "ended";
   user.pass.end = Date.now();
+  user.markModified("pass");
+
   await user.save();
 
   io.emit("passesUpdated");
@@ -216,6 +220,7 @@ export async function cancelPass(req, res) {
 
   user.pass.status = "cancelled";
   user.pass.start = Date.now();
+  user.markModified("pass");
   await user.save();
 
   io.emit("passesUpdated");

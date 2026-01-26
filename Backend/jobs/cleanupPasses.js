@@ -22,6 +22,7 @@ setInterval(async () => {
 
       if (Date.now() - referenceTime > MAX_EXPIRED_PASS_DURATION) {
         user.pass = null;
+        user.markModified("pass");
         await user.save();
       }
     }
