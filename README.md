@@ -122,7 +122,7 @@ npm i
 
 ### 3. Environment Variables
 
-Create a `.env` file in `/server`:
+Create a `.env` file in `/Backend`:
 
 ```
 ACCESS_TOKEN_SECRET=your_secret_key
